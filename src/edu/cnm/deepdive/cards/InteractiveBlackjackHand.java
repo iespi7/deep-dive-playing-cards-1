@@ -1,6 +1,7 @@
 package edu.cnm.deepdive.cards;
 
 import edu.cnm.deepdive.cards.Deck.InsufficientCardsException;
+import java.util.ResourceBundle;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
@@ -13,6 +14,14 @@ import java.util.regex.Pattern;
 public class InteractiveBlackjackHand extends BlackjackHand {
 
   private static final Pattern NON_WHITE_SPACE = Pattern.compile("\\S+");
+  private static final String RESOURCE_BUNDLE = "resources/interactive_blackjack_hand";
+  private static final String CURRENT_HAND_PATTERN_KEY = "current_hand_pattern";
+  private static final String FINAL_HAND_PATTERN_KEY = "final_hand_pattern";
+  private static final String ACTION_PROMPT_PATTERN_KEY = "action_prompt_pattern";
+  private static final String YES_INPUT_CHAR_KEY = "yes_input_char";
+  private static final String NO_INPUT_CHAR_KEY = "no_input_char";
+
+  private static ResourceBundle bundle = ResourceBundle.getBundle(RESOURCE_BUNDLE);
 
   private Scanner scanner;
 
@@ -45,16 +54,16 @@ public class InteractiveBlackjackHand extends BlackjackHand {
   public void play() throws InsufficientCardsException {
     boolean stay = false;
     while (getTotal() < 21 && !stay) {
-      System.out.printf("\t%s", this);
+      System.out.printf(bundle.getString(CURRENT_HAND_PATTERN_KEY), this);
       Boolean hit = null;
       while (hit == null) {
-        System.out.print(": Hit? [y/n] ");
+        System.out.print(bundle.getString(ACTION_PROMPT_PATTERN_KEY));
         while (!scanner.hasNext(NON_WHITE_SPACE)) {}
         char input = scanner.next(NON_WHITE_SPACE).toLowerCase().charAt(0);
-        if (input == 'y') {
+        if (input == bundle.getString(YES_INPUT_CHAR_KEY).charAt(0)) {
           hit = true;
           hit();
-        } else if (input == 'n') {
+        } else if (input == bundle.getString(NO_INPUT_CHAR_KEY).charAt(0)) {
           hit = false;
           stay = true;
         }
@@ -62,7 +71,7 @@ public class InteractiveBlackjackHand extends BlackjackHand {
       }
     }
     if (!stay) {
-      System.out.printf("\t%s%n", this);
+      System.out.printf(bundle.getString(FINAL_HAND_PATTERN_KEY), this);
     }
   }
 
